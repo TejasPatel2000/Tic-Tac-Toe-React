@@ -3,6 +3,8 @@ import './App.css';
 import { ListItem } from './ListItem.js';
 import { useState, useRef, useEffect } from 'react';
 import io from 'socket.io-client';
+import { Board } from './Board.js';
+
 
 const socket = io(); // Connects to socket connection
 
@@ -43,6 +45,7 @@ function App() {
       <ul>
         {messages.map((item, index) => <ListItem key={index} name={item} />)}
       </ul>
+        <Board/>
     </div>
   );
 }
