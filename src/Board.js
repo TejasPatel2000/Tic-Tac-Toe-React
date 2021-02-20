@@ -14,6 +14,7 @@ export function Board() {
       setBoard(prevBoard => { 
           let newBoard=[...prevBoard];
           var player=isX ? "X" : "O";
+          console.log("Player", player);
           newBoard[index]=player;
           return newBoard;
       });
