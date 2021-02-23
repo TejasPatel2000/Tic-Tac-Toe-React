@@ -11,13 +11,18 @@ export function Board() {
     const [isX, setXNext ] = useState(true); 
     
     function fillSquare(index){
-      setBoard(prevBoard => { 
-          let newBoard=[...prevBoard];
-          var player=isX ? "X" : "O";
-          newBoard[index]=player;
-          return newBoard;
-      });
-      socket.emit('square', { index: index });
+      let newBoard = [...board];
+      newBoard[index] = isX ? "X":"O";
+      setBoard(newBoard);
+      socket.emit('square', { board: newBoard, isX:isX });
+      console.log(board);
+      // setBoard(prevBoard => { 
+      //     let newBoard=[...prevBoard];
+      //     var player=isX ? "X" : "O";
+      //     newBoard[index]=player;
+      //     return newBoard;
+      // });
+      // socket.emit('square', { index: index });
       // var player = isX ? "X" : "O";
       // return setBoard(prevBoard => [...prevBoard], board[index]=player );
  }
@@ -32,18 +37,8 @@ export function Board() {
         
           // If the server sends a message (on behalf of another client), then we
           // add it to the list of messages to render it on the UI.
-          
-          setBoard(prevBoard => { 
-            let newBoard=[...prevBoard];
-            newBoard[data.index]=isX ? "X" : "O";
-            console.log("SErver", newBoard);
-            // setXNext(!isX);
-            return newBoard;
-          });
-            
-            
-          //var player = isX ? "X" : "O";
-          //return setBoard(prevBoard => [...prevBoard], board[data.index]=player);
+          setBoard(data.board);
+          setXNext(!data.isX);
           
         });
     }, []);
