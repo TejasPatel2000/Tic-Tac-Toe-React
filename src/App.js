@@ -15,7 +15,6 @@ function App() {
     changeList(prevList => [...myList, userText]);
   }
   
-  const [board, setBoard] = useState([]);
   
 
   return (
@@ -23,7 +22,6 @@ function App() {
     <h1> Tic Tac Toe </h1>
     
     <Board />
-    
     </div>
   );
     // <input ref = {inputRef} type = "text" />
