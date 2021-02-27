@@ -45,10 +45,16 @@ def on_square(data): # data is whatever arg you pass in your emit call on client
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
     socketio.emit('square',  data, broadcast=True, include_self=False)
+    
+@socketio.on('login')
+def on_login(data):
+    print(str(data))
+    socketio.emit("login", data, broadcast=True, include_self=False)
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 socketio.run(
     app,
     host=os.getenv('IP', '0.0.0.0'),
     port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
+    debug=True
 )
