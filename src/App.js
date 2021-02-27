@@ -36,13 +36,7 @@ function App() {
         newUser['spectators'] += username + ", ";
       }
       changeUsers(newUser);
-      
-      // changeUsers({...user, masterField: {
-      //   playerX: username,
-      //   playerO: username,
-      // }});
-      
-      //changeUsers(prevUsers => [...prevUsers, username]);
+    
       socket.emit('login', {user:newUser});
     }
   }
@@ -58,8 +52,6 @@ function App() {
         });
     }, []);
     
-    console.log(loggedIn);
-
 
   return <div>
       <h1> Tic Tac Toe </h1>

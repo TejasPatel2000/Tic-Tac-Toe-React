@@ -7,8 +7,8 @@ import io from 'socket.io-client';
 const socket = io(); // Connects to socket connection
 
 export function Board() {
-    const [board, setBoard] = useState([]);
-    const [isX, setXNext ] = useState(true); 
+    const [board, setBoard] = useState([null,null,null,null,null,null,null,null,null]);
+    const [isX, setXNext ] = useState(true);
     const winner = calculateWinner(board);
     
     function fillSquare(index){
@@ -18,15 +18,6 @@ export function Board() {
       setBoard(newBoard);
       socket.emit('square', { board: newBoard, isX:isX });
       console.log(board);
-      // setBoard(prevBoard => { 
-      //     let newBoard=[...prevBoard];
-      //     var player=isX ? "X" : "O";
-      //     newBoard[index]=player;
-      //     return newBoard;
-      // });
-      // socket.emit('square', { index: index });
-      // var player = isX ? "X" : "O";
-      // return setBoard(prevBoard => [...prevBoard], board[index]=player );
  }
  
     function calculateWinner(squares) {
@@ -44,6 +35,8 @@ export function Board() {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
           return squares[a];
+        } else if(!squares.includes(null)){
+          return "DRAW";
         }
       }
     return null;
@@ -63,7 +56,14 @@ export function Board() {
           setXNext(!data.isX);
           
         });
+        
+        socket.on('login', (data) => {
+          console.log('login event received on board.js!');
+          console.log(data);
+          
+        });
     }, []);
+    
 
     return <div class="board">
         <Square fillSquare={fillSquare} board={board} index={0} />
@@ -76,7 +76,14 @@ export function Board() {
         <Square fillSquare={fillSquare} board={board} index={7} />
         <Square fillSquare={fillSquare} board={board} index={8} />
         <p>
-          {winner ? "Winner: " + winner : "Next Player: " + (isX ? "X" : "O")}
+          {winner 
+          ? <div>
+            {winner=="DRAW" ? "It is a draw" : "Winner: " + winner}
+          </div>
+          : <div>
+            Next Player: {(isX ? "X" : "O")}
+          </div>
+          }
         </p>
       </div>
 
