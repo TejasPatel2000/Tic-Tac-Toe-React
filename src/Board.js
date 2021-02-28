@@ -111,11 +111,11 @@ export function Board(props){
         
           {winner 
           ? <div>
-            {winner=="DRAW" ? "It is a draw" : "Winner: " + winner}
+            <h3> {winner=="DRAW" ? "It is a draw" : "Winner: " + winner} </h3>
             <button onClick={restart} >Restart</button>
           </div>
           : <div>
-            Next Player: {(isX ? "X" : "O")}
+            <h3> Next Player: {(isX ? "X" : "O")} </h3>
           </div>
           }
         </p>

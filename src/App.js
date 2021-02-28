@@ -67,14 +67,17 @@ function App() {
           </h3>
         {loggedIn 
         ? (<div>
-            
+            <h2> You're username is: {username} </h2>
             {user['playerO'] != "" &&
               <Board name={username} dict={user}/> 
-
             }
           </div>)
-        : (<div> 
+        : (<div class ="group"> 
+          <br/>
           <input ref = {inputRef} type = "text" />
+          <label for="name">UserName</label>
+          <div class="bar"></div>
+          
           <button onClick={login} >Login </button>
         </div>)
         }

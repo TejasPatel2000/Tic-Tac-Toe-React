@@ -1,11 +1,51 @@
+html, body, #root, #root>div {
+    font-size: 20px;
+  }
+
 .board {
-	width: 300px; /* Total horizontal dimensions */
-	height: 300px; /* Total vertical dimensions */
+	background: #333;
+	right: 60px;
+	width: 500px; /* Total horizontal dimensions */
+	height: 500px; /* Total vertical dimensions */
 	display: grid; /* Enables CSS Grid */ 
 	grid-template-columns: repeat(3, 1fr); /* Total horizontal space broken into 3 columns */
 	grid-template-rows: repeat(3, 1fr); /* Total vertical space broken into 3 rows */
+	color: white;
+    position: relative;
 }
 
 .box {
-  border: 1px solid black; /* Shows the lines in the CSS grid */
+	line-height: 200px;
+	font-size: 50px;
+	text-align: center;
+  	width: 200px;
+    height: 200px;
+    position: relative;
+  	border: 1px solid white; /* Shows the lines in the CSS grid */
+}
+
+button {
+	padding: 100px;
+  box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
+	background-color:#ededed;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#777777;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+button:hover {
+	background:linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
+	background-color:#dfdfdf;
+}
+button:active {
+	position:relative;
+	top:1px;
 }
