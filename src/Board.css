@@ -15,7 +15,7 @@ html, body, #root, #root>div {
 }
 
 .box {
-	line-height: 200px;
+	line-height: 150px;
 	font-size: 50px;
 	text-align: center;
   	width: 150px;
