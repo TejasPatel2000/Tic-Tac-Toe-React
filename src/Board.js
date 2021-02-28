@@ -9,7 +9,7 @@ const socket = io(); // Connects to socket connection
 export function Board(props) {
     const [board, setBoard] = useState([null,null,null,null,null,null,null,null,null]);
     const [isX, setXNext] = useState(true);
-    const [turnEnd, setEnd] = useState(isX);
+    const [isTurn, setTurn] = useState(isX);
     const [users, changeUsers]  = useState({ 
       playerX: "",
       playerO: "",
@@ -20,11 +20,10 @@ export function Board(props) {
     
     function fillSquare(index){
         const player = props.name;
-        console.log(turnEnd);
         if(!users['spectators'].includes(player)){
           let newBoard = [...board];
-          if (winner || newBoard[index])  return;
-          //setEnd(prevTurn => !prevTurn);
+          if (winner || newBoard[index] || !isTurn)  return;
+          setTurn(prevTurn=>!prevTurn);
           if(users['playerX']==player && isX){
            newBoard[index] = "X";
            setBoard(newBoard);
@@ -32,6 +31,7 @@ export function Board(props) {
             newBoard[index] = "O";
             setBoard(newBoard);
           }
+          
           socket.emit('square', { board: newBoard, isX:isX });
           setXNext(!isX);
         }else return;
@@ -80,7 +80,7 @@ export function Board(props) {
           // add it to the list of messages to render it on the UI.
           
           setBoard(data.board);
-          setEnd(prevTurn => !prevTurn);
+          setTurn(prevTurn => !prevTurn);
           setXNext(!data.isX);
           
           

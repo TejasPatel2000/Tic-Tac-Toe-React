@@ -60,7 +60,6 @@ function App() {
         
         {loggedIn 
         ? (<div>
-            <Board name={username}/> 
             <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
             <h3>
@@ -69,6 +68,10 @@ function App() {
             {user["spectators"].map((item) => <li>{item}</li>)} 
             </ul>
             </h3>
+            {user['playerO'] != "" &&
+              <Board name={username}/> 
+
+            }
           </div>)
         : (<div> 
           <input ref = {inputRef} type = "text" />
