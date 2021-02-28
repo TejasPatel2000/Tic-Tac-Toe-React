@@ -57,17 +57,17 @@ function App() {
   if(inputRef != null){
     return <div>
         <h1> Tic Tac Toe </h1>
-        
-        {loggedIn 
-        ? (<div>
-            <h3>Player X: {user["playerX"]}</h3>
+        <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
             <h3>
             Spectators:
             <ul>
             {user["spectators"].map((item) => <li>{item}</li>)} 
             </ul>
-            </h3>
+          </h3>
+        {loggedIn 
+        ? (<div>
+            
             {user['playerO'] != "" &&
               <Board name={username} dict={user}/> 
 
