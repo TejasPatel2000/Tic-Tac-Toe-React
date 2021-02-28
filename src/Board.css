@@ -4,7 +4,7 @@ html, body, #root, #root>div {
 
 .board {
 	background: #333;
-	right: 60px;
+	right: 30px;
 	width: 300px; /* Total horizontal dimensions */
 	height: 300px; /* Total vertical dimensions */
 	display: grid; /* Enables CSS Grid */ 
@@ -18,8 +18,8 @@ html, body, #root, #root>div {
 	line-height: 200px;
 	font-size: 50px;
 	text-align: center;
-  	width: 200px;
-    height: 200px;
+  	width: 150px;
+    height: 150px;
     position: relative;
   	border: 1px solid white; /* Shows the lines in the CSS grid */
 }
