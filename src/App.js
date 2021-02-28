@@ -12,8 +12,10 @@ function App() {
   const [user, changeUsers]  = useState({ 
       playerX: "",
       playerO: "",
-      spectators: "",
+      spectators: [],
     });
+  
+  const [username, setUsername] = useState("");
     
   const [loggedIn, setStatus] = useState(false);
   const inputRef = useRef(null);
@@ -27,16 +29,16 @@ function App() {
     if(inputRef != null){
       setStatus(true);
       const username = inputRef.current.value;
+      setUsername(username);
       const newUser = {...user};
       if(newUser["playerX"] == ""){
         newUser['playerX'] = username;
       }else if(newUser['playerO'] == ""){
         newUser['playerO'] = username;
       }else{
-        newUser['spectators'] += username + ", ";
+        newUser['spectators'].push(username);
       }
       changeUsers(newUser);
-    
       socket.emit('login', {user:newUser});
     }
   }
@@ -52,25 +54,25 @@ function App() {
         });
     }, []);
     
-
-  return <div>
-      <h1> Tic Tac Toe </h1>
-      
-      {loggedIn 
-      ? <div>
-          <Board/> 
-          <h3>Player X: {user["playerX"]}</h3>
-          <h3>Player O: {user["playerO"]}</h3>
-          <h3>Spectators: {user["spectators"]}</h3>
-        </div>
-      :<div> 
-        <input ref = {inputRef} type = "text" />
-        <button onClick={login} >Login </button>
+  if(inputRef != null){
+    return <div>
+        <h1> Tic Tac Toe </h1>
+        
+        {loggedIn 
+        ? (<div>
+            <Board name={username}/> 
+            <h3>Player X: {user["playerX"]}</h3>
+            <h3>Player O: {user["playerO"]}</h3>
+            <h3>Spectators: {user["spectators"]}</h3>
+          </div>)
+        : (<div> 
+          <input ref = {inputRef} type = "text" />
+          <button onClick={login} >Login </button>
+        </div>)
+        }
+        
       </div>
-      }
-      
-    </div>
- 
+  }
     // <input ref = {inputRef} type = "text" />
     // <button onClick={onClickButton} >Add to list!</button>
     // <ul>

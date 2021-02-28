@@ -6,18 +6,32 @@ import io from 'socket.io-client';
 
 const socket = io(); // Connects to socket connection
 
-export function Board() {
+export function Board(props) {
     const [board, setBoard] = useState([null,null,null,null,null,null,null,null,null]);
-    const [isX, setXNext ] = useState(true);
+    const [isX, setXNext] = useState(true);
+    const [users, changeUsers]  = useState({ 
+      playerX: "",
+      playerO: "",
+      spectators: [],
+    });
     const winner = calculateWinner(board);
+
     
     function fillSquare(index){
-      let newBoard = [...board];
-      if (winner || newBoard[index])  return;
-      newBoard[index] = isX ? "X":"O";
-      setBoard(newBoard);
-      socket.emit('square', { board: newBoard, isX:isX });
-      console.log(board);
+        const player = props.name;
+        if(!users['spectators'].includes(player)){
+          let newBoard = [...board];
+          if (winner || newBoard[index])  return;
+          if(users['playerX']==player && isX){
+           newBoard[index] = "X";
+          }else{
+            newBoard[index] = "O";
+          }
+          setBoard(newBoard);
+          socket.emit('square', { board: newBoard, isX:isX });
+          console.log(board);
+        }else return;
+      
  }
  
     function calculateWinner(squares) {
@@ -34,7 +48,11 @@ export function Board() {
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-          return squares[a];
+          if (squares[a] == "X"){
+            return users["playerX"];
+          }else{
+            return users["playerO"];
+          }
         } else if(!squares.includes(null)){
           return "DRAW";
         }
@@ -49,7 +67,7 @@ export function Board() {
         socket.on('square', (data) => {
           console.log('click event received!');
           console.log(data);
-        
+  
           // If the server sends a message (on behalf of another client), then we
           // add it to the list of messages to render it on the UI.
           setBoard(data.board);
@@ -57,11 +75,14 @@ export function Board() {
           
         });
         
+        
         socket.on('login', (data) => {
           console.log('login event received on board.js!');
           console.log(data);
-          
+          var response = {...data.user};
+          changeUsers(response);
         });
+        
     }, []);
     
 
