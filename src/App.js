@@ -67,7 +67,7 @@ function App() {
           </h3>
         {loggedIn 
         ? (<div>
-            <h2> You're username is: {username} </h2>
+            <h2> Your username is: {username} </h2>
             {user['playerO'] != "" &&
               <Board name={username} dict={user}/> 
             }
