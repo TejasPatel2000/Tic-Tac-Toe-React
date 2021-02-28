@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 
 const socket = io(); // Connects to socket connection
 
-export function Board(props) {
+export function Board(props){
     const [board, setBoard] = useState([null,null,null,null,null,null,null,null,null]);
     const [isX, setXNext] = useState(true);
     const [isTurn, setTurn] = useState(isX);
@@ -20,21 +20,20 @@ export function Board(props) {
     
     function fillSquare(index){
         const player = props.name;
-        if(!users['spectators'].includes(player)){
-          let newBoard = [...board];
-          if (winner || newBoard[index] || !isTurn)  return;
+        let newBoard = [...board];
+        console.log(player, props.dict, props.dict['player' + (isX ? "X":"O")]);
+        console.log("BOARD", board);
+        if (winner || newBoard[index] || !isTurn) return;
+        if(player == props.dict['player' + (isX ? "X":"O")]){
           setTurn(prevTurn=>!prevTurn);
-          if(users['playerX']==player && isX){
-           newBoard[index] = "X";
-           setBoard(newBoard);
-          }else if(users['playerO']==player && !isX){
-            newBoard[index] = "O";
-            setBoard(newBoard);
-          }
-          
+          newBoard[index] = isX ? "X": "O";
+          setBoard(newBoard);
           socket.emit('square', { board: newBoard, isX:isX });
           setXNext(!isX);
-        }else return;
+        }
+        else{
+          console.log("Don't match");
+        }
       
  }
  
@@ -52,20 +51,21 @@ export function Board(props) {
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-          if (squares[a] == "X"){
-            return users["playerX"];
-          }else{
-            return users["playerO"];
-          }
+          return props.dict['player' + (squares[a])];
         } else if(!squares.includes(null)){
           return "DRAW";
         }
       }
+      console.log("SHOULDNT APPEAR");
     return null;
   }
   
   function restart() {
-    setBoard([null,null,null,null,null,null,null,null,null]);
+    const newBoard = [null,null,null,null,null,null,null,null,null];
+    setBoard(newBoard);
+    setTurn(true);
+    setXNext(true);
+    socket.emit("square", {board:newBoard});
   }
     
     
@@ -80,7 +80,7 @@ export function Board(props) {
           // add it to the list of messages to render it on the UI.
           
           setBoard(data.board);
-          setTurn(prevTurn => !prevTurn);
+          setTurn(true);
           setXNext(!data.isX);
           
           
@@ -96,7 +96,7 @@ export function Board(props) {
         
     }, []);
     
-
+    
     return <div class="board">
         <Square fillSquare={fillSquare} board={board} index={0} />
         <Square fillSquare={fillSquare} board={board} index={1} />
@@ -108,6 +108,7 @@ export function Board(props) {
         <Square fillSquare={fillSquare} board={board} index={7} />
         <Square fillSquare={fillSquare} board={board} index={8} />
         <p>
+        
           {winner 
           ? <div>
             {winner=="DRAW" ? "It is a draw" : "Winner: " + winner}

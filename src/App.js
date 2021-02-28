@@ -69,7 +69,7 @@ function App() {
             </ul>
             </h3>
             {user['playerO'] != "" &&
-              <Board name={username}/> 
+              <Board name={username} dict={user}/> 
 
             }
           </div>)
