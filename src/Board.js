@@ -59,6 +59,10 @@ export function Board(props) {
       }
     return null;
   }
+  
+  function restart() {
+    setBoard([null,null,null,null,null,null,null,null,null]);
+  }
     
     
      useEffect(() => {
@@ -100,6 +104,7 @@ export function Board(props) {
           {winner 
           ? <div>
             {winner=="DRAW" ? "It is a draw" : "Winner: " + winner}
+            <button onClick={restart} >Restart</button>
           </div>
           : <div>
             Next Player: {(isX ? "X" : "O")}
