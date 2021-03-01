@@ -32,7 +32,7 @@ export function Board(props){
           setXNext(!isX);
         }
         else{
-          console.log("Don't match");
+          console.log("Don't match: NOT your turn");
         }
       
  }
@@ -56,7 +56,6 @@ export function Board(props){
           return "DRAW";
         }
       }
-      console.log("SHOULDNT APPEAR");
     return null;
   }
   
@@ -75,15 +74,10 @@ export function Board(props){
         socket.on('square', (data) => {
           console.log('click event received!');
           console.log(data);
-  
-          // If the server sends a message (on behalf of another client), then we
-          // add it to the list of messages to render it on the UI.
-          
           setBoard(data.board);
           setTurn(true);
           setXNext(!data.isX);
-          
-          
+
         });
         
         
@@ -107,20 +101,15 @@ export function Board(props){
         <Square fillSquare={fillSquare} board={board} index={6} />
         <Square fillSquare={fillSquare} board={board} index={7} />
         <Square fillSquare={fillSquare} board={board} index={8} />
-        <p>
         
-          {winner 
+        {winner 
           ? <div>
-            <h3> {winner=="DRAW" ? "It is a draw" : "Winner: " + winner} </h3>
-            <button onClick={restart} >Restart</button>
-          </div>
+              <h3> {winner=="DRAW" ? "It is a draw" : "Winner: " + winner} </h3>
+              <button onClick={restart} >Restart</button>
+            </div>
           : <div>
-            <h3> Next Player: {(isX ? "X" : "O")} </h3>
-          </div>
+              <h3> Next Player: {(isX ? "X" : "O")} </h3>
+            </div>
           }
-        </p>
-      </div>
-
-
-    
+        </div>
 }
