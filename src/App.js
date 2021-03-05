@@ -4,8 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 
 import { Board } from './Board.js';
 import io from 'socket.io-client';
-import { Board } from './Board.js';
-
 
 const socket = io();
 
@@ -81,17 +79,6 @@ function App() {
       </div>
   }
 
-  return (
-    <div>
-      <h1>Chat Messages</h1>
-      Enter message here: <input ref={inputRef} type="text" />
-      <button onClick={onClickButton}>Send</button>
-      <ul>
-        {messages.map((item, index) => <ListItem key={index} name={item} />)}
-      </ul>
-        <Board/>
-    </div>
-  );
 }
 
 export default App;
