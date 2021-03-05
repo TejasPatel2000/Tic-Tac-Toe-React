@@ -1,41 +1,85 @@
 import logo from './logo.svg';
 import './App.css';
-import { ListItem } from './ListItem.js';
 import { useState, useRef, useEffect } from 'react';
+
+import { Board } from './Board.js';
 import io from 'socket.io-client';
 import { Board } from './Board.js';
 
 
-const socket = io(); // Connects to socket connection
+const socket = io();
 
 function App() {
-  const [messages, setMessages] = useState([]); // State variable, list of messages
-  const inputRef = useRef(null); // Reference to <input> element
-
-  function onClickButton() {
-    if (inputRef != null) {
-      const message = inputRef.current.value;
-      // If your own client sends a message, we add it to the list of messages to 
-      // render it on the UI.
-      setMessages(prevMessages => [...prevMessages, message]);
-      socket.emit('chat', { message: message });
+  const [user, changeUsers]  = useState({ 
+      playerX: "",
+      playerO: "",
+      spectators: [],
+    });
+  
+  const [username, setUsername] = useState("");
+    
+  const [loggedIn, setStatus] = useState(false);
+  const inputRef = useRef(null);
+  
+  function login() { 
+    if(inputRef != null){
+      setStatus(true);
+      const username = inputRef.current.value;
+      setUsername(username);
+      const newUser = {...user};
+      if(newUser["playerX"] == ""){
+        newUser['playerX'] = username;
+      }else if(newUser['playerO'] == ""){
+        newUser['playerO'] = username;
+      }else{
+        newUser['spectators'].push(username);
+      }
+      changeUsers(newUser);
+      socket.emit('login', {user:newUser});
     }
   }
-
-  // The function inside useEffect is only run whenever any variable in the array
-  // (passed as the second arg to useEffect) changes. Since this array is empty
-  // here, then the function will only run once at the very beginning of mounting.
-  useEffect(() => {
+  
+   useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
     // run the code in the function that is passed in as the second arg
-    socket.on('chat', (data) => {
-      console.log('Chat event received!');
-      console.log(data);
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
-      setMessages(prevMessages => [...prevMessages, data.message]);
-    });
-  }, []);
+        socket.on('login', (data) => {
+          console.log('login event received!');
+          console.log(data);
+          changeUsers(data.user);
+
+        });
+    }, []);
+    
+  if(inputRef != null){
+    return <div>
+        <h1> Tic Tac Toe </h1>
+        <h3>Player X: {user["playerX"]}</h3>
+            <h3>Player O: {user["playerO"]}</h3>
+            <h3>
+            Spectators:
+            <ul>
+            {user["spectators"].map((item) => <li>{item}</li>)} 
+            </ul>
+          </h3>
+        {loggedIn 
+        ? (<div>
+            <h2> Your username is: {username} </h2>
+            {user['playerO'] != "" &&
+              <Board name={username} dict={user}/> 
+            }
+          </div>)
+        : (<div class ="group"> 
+          <br/>
+          <input ref = {inputRef} type = "text" />
+          <label for="name">UserName</label>
+          <div class="bar"></div>
+          
+          <button onClick={login} >Login </button>
+        </div>)
+        }
+        
+      </div>
+  }
 
   return (
     <div>
