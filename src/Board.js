@@ -3,6 +3,7 @@ import './Board.css';
 import { useState, useEffect } from 'react';
 import { Square } from './Square.js';
 import io from 'socket.io-client';
+import { Leaderboard } from './LeaderBoard.js'
 
 const socket = io(); // Connects to socket connection
 
@@ -51,6 +52,7 @@ export function Board(props){
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+          socket.emit("updateScore", {winner:props.dict['player' + (squares[a])], loser:props.dict['player' + (squares[b])]})
           return props.dict['player' + (squares[a])];
         } else if(!squares.includes(null)){
           return "DRAW";
@@ -88,6 +90,7 @@ export function Board(props){
           changeUsers(response);
         });
         
+        
     }, []);
     
 
@@ -111,5 +114,6 @@ export function Board(props){
               <h3> Next Player: {(isX ? "X" : "O")} </h3>
             </div>
           }
+          <br/>
         </div>
 }

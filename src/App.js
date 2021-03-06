@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 
 import { Board } from './Board.js';
 import io from 'socket.io-client';
+import { Leaderboard } from './LeaderBoard.js'
 
 const socket = io();
 
@@ -34,6 +35,7 @@ function App() {
       }
       changeUsers(newUser);
       socket.emit('login', {user:newUser});
+      socket.emit('db', username);
     }
   }
   
@@ -51,6 +53,7 @@ function App() {
   if(inputRef != null){
     return <div>
         <h1> Tic Tac Toe </h1>
+        <Leaderboard/>
         <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
             <h3>
@@ -75,7 +78,7 @@ function App() {
           <button onClick={login} >Login </button>
         </div>)
         }
-        
+      
       </div>
   }
 
