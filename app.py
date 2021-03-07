@@ -88,9 +88,37 @@ def on_db(data):
 
     # socketio.emit('db', data, broadcast=True, include_self=False)
     
-# @socketio.on('updateScore')
-# def on_updateScore(data):
-#     winner = db.session.query(models.People)
+@socketio.on('updateScore')
+def on_updateScore(data):
+    # winner = db.session.query(models.Person).filter_by(username=data['winner']).first()  
+    # loser = db.session.query(models.Person).get(data['loser'])
+    
+    winner = db.session.query(models.Person).filter_by(username=data['winner']).first()
+    loser = db.session.query(models.Person).filter_by(username=data['loser']).first()
+    
+    winner.score = winner.score + 1
+    print(winner, winner.score)
+    loser.score = loser.score - 1
+    
+    db.session.commit()
+    
+    all_people = models.Person.query.all()  
+    scores_users = {}
+    for person in all_people:
+        scores_users[person.username] = person.score
+    
+    socketio.emit('updateScore', scores_users, broadcast=True, include_self=False)
+    
+    
+@socketio.on("showLeaderBoard")
+def on_showLeaderBoard():
+    all_people = models.Person.query.all()  
+    users = {}
+    for person in all_people:
+        users[person.username] = person.score
+    
+    socketio.emit('showLeaderBoard', users, broadcast=True, include_self=False)
+    
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 if __name__ == "__main__":

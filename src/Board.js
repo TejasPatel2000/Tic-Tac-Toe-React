@@ -52,7 +52,8 @@ export function Board(props){
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-          socket.emit("updateScore", {winner:props.dict['player' + (squares[a])], loser:props.dict['player' + (squares[b])]})
+          // console.log("updateScore", {winner:props.dict['player' + (squares[a])], loser:props.dict['player' + (squares[b])]});
+          // socket.emit("updateScore", {winner:props.dict['player' + (squares[a])], loser:props.dict['player' + (squares[b])]});
           return props.dict['player' + (squares[a])];
         } else if(!squares.includes(null)){
           return "DRAW";
@@ -79,7 +80,16 @@ export function Board(props){
           setBoard(data.board);
           setTurn(true);
           setXNext(!data.isX);
-
+          
+          if(calculateWinner(board) == props.dict['playerX']){
+              console.log("HI THIS SIS A V IMPORTANT CHECK")
+              socket.emit("updateScore", {winner:props.dict['playerX'], loser:props.dict['playerO']});
+          }else if(calculateWinner(board)== props.dict['playerO']){
+            console.log("CHECK 2222222222222222222222222222222222222222222222")
+            socket.emit("updateScore", {winner:props.dict['playerO'], loser:props.dict['playerX']});
+          }else{
+            console.log("ROHAN KRISHNAKUMARRR")
+          }
         });
         
         

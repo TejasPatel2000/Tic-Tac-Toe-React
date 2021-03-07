@@ -20,6 +20,8 @@ function App() {
   const [loggedIn, setStatus] = useState(false);
   const inputRef = useRef(null);
   
+  const [showLeader, changeLeader] = useState(false);
+  
   function login() { 
     if(inputRef != null){
       setStatus(true);
@@ -38,6 +40,12 @@ function App() {
       socket.emit('db', username);
     }
   }
+
+  function showLeaderBoard(){
+    
+    changeLeader(!showLeader);
+    socket.emit("showLeaderBoard", );
+  }
   
    useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
@@ -53,7 +61,10 @@ function App() {
   if(inputRef != null){
     return <div>
         <h1> Tic Tac Toe </h1>
-        <Leaderboard/>
+        <button onClick={showLeaderBoard}> Show Leaderboard </button>
+        {showLeader &&
+          <Leaderboard/>
+        }
         <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
             <h3>

@@ -29,13 +29,25 @@ export function Leaderboard(){
     useEffect(() => {
         // Listening for a chat event emitted by the server. If received, we
         // run the code in the function that is passed in as the second arg
+        socket.on('showLeaderBoard', (data) => {
+            var copy = {...data};
+            changeUsers(copy);
+        });
+        
+         socket.on('updateScore', (data) => {
+            console.log(data);
+            var copy = {...data};
+            console.log("Leaderboard update event received");
+            changeUsers(copy);
+        });
+        
+        
         socket.on('db', (data) => {
             console.log("Leaderboard event received");
-            var response = {...data.user};
-            console.log("RESPONSE", response);
             changeUsers(data);
-            console.log("USERS", users);
         });
+        
+       
         
         
     }, []);
