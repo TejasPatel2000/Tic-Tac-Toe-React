@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react'; 
 import io from 'socket.io-client';
+import './LeaderBoard.css';
 
 
 const socket = io(); // Connects to socket connection
@@ -67,7 +68,7 @@ all_players.sort(function(first, second) {
         
            {all_players.map(player => {
             if(user_current==player[0]) {
-                return <tr><td><b><i>{player[0]}</i></b></td><td>{player[1]}</td></tr>;
+                return <tr><td id="special_user"><b><i>{player[0]}</i></b></td><td id="special_user"><b><i>{player[1]}</i></b></td></tr>;
             }
             return <tr><td>{player[0]}</td><td>{player[1]}</td></tr>;
            }
