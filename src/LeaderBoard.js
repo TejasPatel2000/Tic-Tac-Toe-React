@@ -6,9 +6,17 @@ import io from 'socket.io-client';
 const socket = io(); // Connects to socket connection
 
 
-export function Leaderboard(){
-    
-    const [users, changeUsers]  = useState({})
+export function Leaderboard(props){
+        const [users, changeUsers]  = useState({})
+
+        var user_current=props.name;
+        var all_players = Object.keys(users).map(function(key) {
+            return [key, users[key]];
+        });
+
+all_players.sort(function(first, second) {
+  return second[1] - first[1];
+});
 
 // Iterate over the property names:
 // for (let user of Object.keys(a)) {
@@ -56,9 +64,15 @@ export function Leaderboard(){
             </tr>
         </thead>
         <tbody>
-           {Object.keys(users).map(function(key) {
-            return <tr><td>{key}</td><td>{users[key]}</td></tr>;
-            })}
+        
+           {all_players.map(player => {
+            if(user_current==player[0]) {
+                return <tr><td><b><i>{player[0]}</i></b></td><td>{player[1]}</td></tr>;
+            }
+            return <tr><td>{player[0]}</td><td>{player[1]}</td></tr>;
+           }
+            )
+            }
             
         </tbody>
     </table>

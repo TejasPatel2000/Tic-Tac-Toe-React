@@ -63,7 +63,7 @@ function App() {
         <h1> Tic Tac Toe </h1>
         <button onClick={showLeaderBoard}> Show Leaderboard </button>
         {showLeader &&
-          <Leaderboard/>
+          <Leaderboard name={username} />
         }
         <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
