@@ -24,20 +24,22 @@ function App() {
   
   function login() { 
     if(inputRef != null){
-      setStatus(true);
       const username = inputRef.current.value;
-      setUsername(username);
-      const newUser = {...user};
-      if(newUser["playerX"] == ""){
-        newUser['playerX'] = username;
-      }else if(newUser['playerO'] == ""){
-        newUser['playerO'] = username;
-      }else{
-        newUser['spectators'].push(username);
-      }
-      changeUsers(newUser);
-      socket.emit('login', {user:newUser});
-      socket.emit('db', username);
+      if(username.length>0){
+        setStatus(true);
+        setUsername(username);
+        const newUser = {...user};
+        if(newUser["playerX"] == ""){
+          newUser['playerX'] = username;
+        }else if(newUser['playerO'] == ""){
+          newUser['playerO'] = username;
+        }else{
+          newUser['spectators'].push(username);
+        }
+        changeUsers(newUser);
+        socket.emit('login', {user:newUser});
+        socket.emit('db', username);
+    }
     }
   }
 
