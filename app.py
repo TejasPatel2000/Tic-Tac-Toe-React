@@ -97,7 +97,6 @@ def on_updateScore(data):
     loser = db.session.query(models.Person).filter_by(username=data['loser']).first()
     
     winner.score = winner.score + 1
-    print(winner, winner.score)
     loser.score = loser.score - 1
     
     db.session.commit()

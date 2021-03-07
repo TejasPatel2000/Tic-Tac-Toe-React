@@ -9,12 +9,6 @@ const socket = io(); // Connects to socket connection
 export function Leaderboard(){
     
     const [users, changeUsers]  = useState({})
-    
-    var a = {
-        a: 1,
-        b: 2,
-        c: 3
-    };
 
 // Iterate over the property names:
 // for (let user of Object.keys(a)) {
