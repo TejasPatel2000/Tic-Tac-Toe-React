@@ -5,8 +5,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv()) # This is to load your env variables from .env
-
+load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
 app = Flask(__name__, static_folder='./build/static')
 
@@ -23,51 +22,57 @@ import models
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-socketio = SocketIO(
-    app,
-    cors_allowed_origins="*",
-    json=json,
-    manage_session=False
-)
+socketio = SocketIO(app,
+                    cors_allowed_origins="*",
+                    json=json,
+                    manage_session=False)
+
 
 @app.route('/', defaults={"filename": "index.html"})
 @app.route('/<path:filename>')
 def index(filename):
     return send_from_directory('./build', filename)
 
+
 # When a client connects from this Socket connection, this function is run
 @socketio.on('connect')
 def on_connect():
     print('User connected!')
+
 
 # When a client disconnects from this Socket connection, this function is run
 @socketio.on('disconnect')
 def on_disconnect():
     print('User disconnected!')
 
+
 # When a client emits the event 'chat' to the server, this function is run
 # 'chat' is a custom event name that we just decided
 
+
 @socketio.on('chat')
-def on_chat(data): # data is whatever arg you pass in your emit call on client
+def on_chat(data):  # data is whatever arg you pass in your emit call on client
     print(str(data))
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('chat',  data, broadcast=True, include_self=False)
-    
+    socketio.emit('chat', data, broadcast=True, include_self=False)
+
+
 @socketio.on('square')
-def on_square(data): # data is whatever arg you pass in your emit call on client
+def on_square(
+        data):  # data is whatever arg you pass in your emit call on client
     print(str(data))
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('square',  data, broadcast=True, include_self=False)
-    
+    socketio.emit('square', data, broadcast=True, include_self=False)
+
+
 @socketio.on('login')
 def on_login(data):
     print(str(data))
     socketio.emit("login", data, broadcast=True, include_self=False)
-    
-    
+
+
 @socketio.on('db')
 def on_db(data):
     exists = models.Person.query.filter_by(username=data).first()
@@ -77,47 +82,52 @@ def on_db(data):
         db.session.commit()
         all_people = models.Person.query.all()
         users = {}
-        
+
         for person in all_people:
             users[person.username] = person.score
-        
+
         socketio.emit('db', users, broadcast=True, include_self=False)
-        
+
         #db.session.query(Person)
-            
 
     # socketio.emit('db', data, broadcast=True, include_self=False)
-    
+
+
 @socketio.on('updateScore')
 def on_updateScore(data):
-    # winner = db.session.query(models.Person).filter_by(username=data['winner']).first()  
+    # winner = db.session.query(models.Person).filter_by(username=data['winner']).first()
     # loser = db.session.query(models.Person).get(data['loser'])
-    
-    winner = db.session.query(models.Person).filter_by(username=data['winner']).first()
-    loser = db.session.query(models.Person).filter_by(username=data['loser']).first()
-    
+
+    winner = db.session.query(
+        models.Person).filter_by(username=data['winner']).first()
+    loser = db.session.query(
+        models.Person).filter_by(username=data['loser']).first()
+
     winner.score = winner.score + 1
     loser.score = loser.score - 1
-    
+
     db.session.commit()
-    
-    all_people = models.Person.query.all()  
+
+    all_people = models.Person.query.all()
     scores_users = {}
     for person in all_people:
         scores_users[person.username] = person.score
-    
-    socketio.emit('updateScore', scores_users, broadcast=True, include_self=False)
-    
-    
+
+    socketio.emit('updateScore',
+                  scores_users,
+                  broadcast=True,
+                  include_self=False)
+
+
 @socketio.on("showLeaderBoard")
 def on_showLeaderBoard():
-    all_people = models.Person.query.all()  
+    all_people = models.Person.query.all()
     users = {}
     for person in all_people:
         users[person.username] = person.score
-    
+
     socketio.emit('showLeaderBoard', users, broadcast=True, include_self=False)
-    
+
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 if __name__ == "__main__":
@@ -126,5 +136,4 @@ if __name__ == "__main__":
         app,
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
-        debug=True
-    )
+        debug=True)
