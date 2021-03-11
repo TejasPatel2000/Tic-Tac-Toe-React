@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Board } from './Board.js';
 import io from 'socket.io-client';
 
+import { Leaderboard } from './LeaderBoard.js'
+
 const socket = io();
 
 function App() {
@@ -19,22 +21,33 @@ function App() {
   const [loggedIn, setStatus] = useState(false);
   const inputRef = useRef(null);
   
+  const [showLeader, changeLeader] = useState(false);
+  
   function login() { 
     if(inputRef != null){
-      setStatus(true);
       const username = inputRef.current.value;
-      setUsername(username);
-      const newUser = {...user};
-      if(newUser["playerX"] == ""){
-        newUser['playerX'] = username;
-      }else if(newUser['playerO'] == ""){
-        newUser['playerO'] = username;
-      }else{
-        newUser['spectators'].push(username);
-      }
-      changeUsers(newUser);
-      socket.emit('login', {user:newUser});
+      if(username.length>0){
+        setStatus(true);
+        setUsername(username);
+        const newUser = {...user};
+        if(newUser["playerX"] == ""){
+          newUser['playerX'] = username;
+        }else if(newUser['playerO'] == ""){
+          newUser['playerO'] = username;
+        }else{
+          newUser['spectators'].push(username);
+        }
+        changeUsers(newUser);
+        socket.emit('login', {user:newUser});
+        socket.emit('db', username);
     }
+    }
+  }
+
+  function showLeaderBoard(){
+    
+    changeLeader(!showLeader);
+    socket.emit("showLeaderBoard", );
   }
   
    useEffect(() => {
@@ -51,6 +64,10 @@ function App() {
   if(inputRef != null){
     return <div>
         <h1> Tic Tac Toe </h1>
+        <button onClick={showLeaderBoard}> Show Leaderboard </button>
+        {showLeader &&
+          <Leaderboard name={username} />
+        }
         <h3>Player X: {user["playerX"]}</h3>
             <h3>Player O: {user["playerO"]}</h3>
             <h3>
@@ -75,7 +92,7 @@ function App() {
           <button onClick={login} >Login </button>
         </div>)
         }
-        
+      
       </div>
   }
 

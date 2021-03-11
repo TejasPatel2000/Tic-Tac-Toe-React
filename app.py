@@ -2,8 +2,24 @@ import os
 from flask import Flask, send_from_directory, json, session
 from flask_socketio import SocketIO
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv()) # This is to load your env variables from .env
+
 
 app = Flask(__name__, static_folder='./build/static')
+
+# Point SQLAlchemy to your Heroku database
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# Gets rid of a warning
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# IMPORTANT: This must be AFTER creating db variable to prevent
+# circular import issues
+import models
 
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -50,11 +66,65 @@ def on_square(data): # data is whatever arg you pass in your emit call on client
 def on_login(data):
     print(str(data))
     socketio.emit("login", data, broadcast=True, include_self=False)
+    
+    
+@socketio.on('db')
+def on_db(data):
+    exists = models.Person.query.filter_by(username=data).first()
+    if exists == None:
+        user = models.Person(username=data, score=100)
+        db.session.add(user)
+        db.session.commit()
+        all_people = models.Person.query.all()
+        users = {}
+        
+        for person in all_people:
+            users[person.username] = person.score
+        
+        socketio.emit('db', users, broadcast=True, include_self=False)
+        
+        #db.session.query(Person)
+            
 
+    # socketio.emit('db', data, broadcast=True, include_self=False)
+    
+@socketio.on('updateScore')
+def on_updateScore(data):
+    # winner = db.session.query(models.Person).filter_by(username=data['winner']).first()  
+    # loser = db.session.query(models.Person).get(data['loser'])
+    
+    winner = db.session.query(models.Person).filter_by(username=data['winner']).first()
+    loser = db.session.query(models.Person).filter_by(username=data['loser']).first()
+    
+    winner.score = winner.score + 1
+    loser.score = loser.score - 1
+    
+    db.session.commit()
+    
+    all_people = models.Person.query.all()  
+    scores_users = {}
+    for person in all_people:
+        scores_users[person.username] = person.score
+    
+    socketio.emit('updateScore', scores_users, broadcast=True, include_self=False)
+    
+    
+@socketio.on("showLeaderBoard")
+def on_showLeaderBoard():
+    all_people = models.Person.query.all()  
+    users = {}
+    for person in all_people:
+        users[person.username] = person.score
+    
+    socketio.emit('showLeaderBoard', users, broadcast=True, include_self=False)
+    
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
-socketio.run(
-    app,
-    host=os.getenv('IP', '0.0.0.0'),
-    port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
-)
+if __name__ == "__main__":
+    db.create_all()
+    socketio.run(
+        app,
+        host=os.getenv('IP', '0.0.0.0'),
+        port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
+        debug=True
+    )

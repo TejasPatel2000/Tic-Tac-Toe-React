@@ -3,6 +3,7 @@ import './Board.css';
 import { useState, useEffect } from 'react';
 import { Square } from './Square.js';
 import io from 'socket.io-client';
+import { Leaderboard } from './LeaderBoard.js'
 
 const socket = io(); // Connects to socket connection
 
@@ -51,6 +52,11 @@ export function Board(props){
       for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+          // if(squares[a] == "X"){
+          //   socket.emit("updateScore", {winner:props.dict['playerX'], loser:props.dict['playerO']});
+          // }else{
+          //   socket.emit("updateScore", {winner:props.dict['playerO'], loser:props.dict['playerX']});
+          // }
           return props.dict['player' + (squares[a])];
         } else if(!squares.includes(null)){
           return "DRAW";
@@ -67,17 +73,25 @@ export function Board(props){
     socket.emit("square", {board:newBoard});
   }
     
+    useEffect(() => {
+        if(winner === props.dict['playerX'] && isX === true){
+          socket.emit("updateScore", {winner:props.dict['playerX'], loser:props.dict['playerO']});
+        }else if(winner === props.dict['playerO'] && isX === false){
+          socket.emit("updateScore", {winner:props.dict['playerO'], loser:props.dict['playerX']});
+        }
+        
+    }, [winner]);
 
      useEffect(() => {
     // Listening for a chat event emitted by the server. If received, we
-    // run the code in the function that is passed in as the second arg
+    // run the code in the function that is passed in as the second ar
+
         socket.on('square', (data) => {
           console.log('click event received!');
           console.log(data);
           setBoard(data.board);
           setTurn(true);
           setXNext(!data.isX);
-
         });
         
         
@@ -87,6 +101,7 @@ export function Board(props){
           var response = {...data.user};
           changeUsers(response);
         });
+        
         
     }, []);
     
@@ -111,5 +126,6 @@ export function Board(props){
               <h3> Next Player: {(isX ? "X" : "O")} </h3>
             </div>
           }
+          <br/>
         </div>
 }
