@@ -1,9 +1,11 @@
-from app import db
+"""Define db"""
+from app import DB
 
 
-class Person(db.Model):
-    username = db.Column(db.String(120), primary_key=True)
-    score = db.Column(db.Integer, nullable=False)
+class Person(DB.Model):
+    """Models to define fields in db"""
+    username = DB.Column(DB.String(120), primary_key=True)
+    score = DB.Column(DB.Integer, nullable=False)
 
     def __repr__(self):
         return '<Person %r %d>' % (self.username, self.score)

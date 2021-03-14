@@ -1,5 +1,6 @@
+"""Backend"""
 import os
-from flask import Flask, send_from_directory, json, session
+from flask import Flask, send_from_directory, json
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -7,42 +8,45 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())  # This is to load your env variables from .env
 
-app = Flask(__name__, static_folder='./build/static')
+APP = Flask(__name__, static_folder='./build/static')
 
 # Point SQLAlchemy to your Heroku database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+APP.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 # Gets rid of a warning
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+DB = SQLAlchemy(APP)
 
 # IMPORTANT: This must be AFTER creating db variable to prevent
 # circular import issues
 import models
 
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+COR = CORS(APP, resources={r"/*": {"origins": "*"}})
 
-socketio = SocketIO(app,
+SOCKETIO = SocketIO(APP,
                     cors_allowed_origins="*",
                     json=json,
                     manage_session=False)
 
 
-@app.route('/', defaults={"filename": "index.html"})
-@app.route('/<path:filename>')
+@APP.route('/', defaults={"filename": "index.html"})
+@APP.route('/<path:filename>')
 def index(filename):
+    """Sends files from directory."""
     return send_from_directory('./build', filename)
 
 
 # When a client connects from this Socket connection, this function is run
-@socketio.on('connect')
+@SOCKETIO.on('connect')
 def on_connect():
+    """connects user"""
     print('User connected!')
 
 
 # When a client disconnects from this Socket connection, this function is run
-@socketio.on('disconnect')
+@SOCKETIO.on('disconnect')
 def on_disconnect():
+    """prints when browser disconnects"""
     print('User disconnected!')
 
 
@@ -50,90 +54,96 @@ def on_disconnect():
 # 'chat' is a custom event name that we just decided
 
 
-@socketio.on('chat')
+@SOCKETIO.on('chat')
 def on_chat(data):  # data is whatever arg you pass in your emit call on client
+    """Chat event used from demo."""
     print(str(data))
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('chat', data, broadcast=True, include_self=False)
+    SOCKETIO.emit('chat', data, broadcast=True, include_self=False)
 
 
-@socketio.on('square')
+@SOCKETIO.on('square')
 def on_square(
         data):  # data is whatever arg you pass in your emit call on client
+    """When user clicks on a square to emit to other browsers"""
     print(str(data))
     # This emits the 'chat' event from the server to all clients except for
     # the client that emmitted the event that triggered this function
-    socketio.emit('square', data, broadcast=True, include_self=False)
+    SOCKETIO.emit('square', data, broadcast=True, include_self=False)
 
 
-@socketio.on('login')
+@SOCKETIO.on('login')
 def on_login(data):
+    """emit login event"""
     print(str(data))
-    socketio.emit("login", data, broadcast=True, include_self=False)
+    SOCKETIO.emit("login", data, broadcast=True, include_self=False)
 
 
-@socketio.on('db')
+@SOCKETIO.on('db')
 def on_db(data):
+    """Checks if user exists in db."""
     exists = models.Person.query.filter_by(username=data).first()
-    if exists == None:
+    if exists is None:
         user = models.Person(username=data, score=100)
-        db.session.add(user)
-        db.session.commit()
+        DB.session.add(user)
+        DB.session.commit()
         all_people = models.Person.query.all()
         users = {}
 
         for person in all_people:
             users[person.username] = person.score
 
-        socketio.emit('db', users, broadcast=True, include_self=False)
+        SOCKETIO.emit('db', users, broadcast=True, include_self=False)
 
         #db.session.query(Person)
 
     # socketio.emit('db', data, broadcast=True, include_self=False)
 
 
-@socketio.on('updateScore')
-def on_updateScore(data):
+@SOCKETIO.on('updateScore')
+def on_update_score(data):
+    """used to update score."""
     # winner = db.session.query(models.Person).filter_by(username=data['winner']).first()
     # loser = db.session.query(models.Person).get(data['loser'])
 
-    winner = db.session.query(
+    winner = DB.session.query(
         models.Person).filter_by(username=data['winner']).first()
-    loser = db.session.query(
+    loser = DB.session.query(
         models.Person).filter_by(username=data['loser']).first()
 
     winner.score = winner.score + 1
     loser.score = loser.score - 1
 
-    db.session.commit()
+    DB.session.commit()
 
     all_people = models.Person.query.all()
     scores_users = {}
     for person in all_people:
         scores_users[person.username] = person.score
 
-    socketio.emit('updateScore',
+    SOCKETIO.emit('updateScore',
                   scores_users,
                   broadcast=True,
                   include_self=False)
 
 
-@socketio.on("showLeaderBoard")
-def on_showLeaderBoard():
+@SOCKETIO.on("showLeaderBoard")
+def on_show_leaderboard():
+    """update leaderboard"""
     all_people = models.Person.query.all()
     users = {}
     for person in all_people:
         users[person.username] = person.score
 
-    socketio.emit('showLeaderBoard', users, broadcast=True, include_self=False)
+    SOCKETIO.emit('showLeaderBoard', users, broadcast=True, include_self=False)
 
 
 # Note that we don't call app.run anymore. We call socketio.run with app arg
 if __name__ == "__main__":
-    db.create_all()
-    socketio.run(
-        app,
+    DB.create_all()
+    SOCKETIO.run(
+        APP,
         host=os.getenv('IP', '0.0.0.0'),
         port=8081 if os.getenv('C9_PORT') else int(os.getenv('PORT', 8081)),
         debug=True)
