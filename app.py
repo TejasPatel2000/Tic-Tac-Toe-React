@@ -90,39 +90,46 @@ def on_db(data):
         players = add_to_db(data)
     SOCKETIO.emit('db', players, broadcast=True, include_self=False)
     #db.session.query(Person)
-    
+
+
 def new_user(user):
+    """create new user using models"""
     user = models.Person(username=user, score=100)
     return user
+
 
 def add_to_db(user):
     """Add user to db"""
     players = {}
-    u = new_user(user)
-    DB.session.add(u)
+    temp_user = new_user(user)
+    DB.session.add(temp_user)
     DB.session.commit()
     all_people = models.Person.query.all()
 
     for person in all_people:
         players[person.username] = person.score
-    
+
     return players
+
 
 def exists(user):
     """Check to see if user exists in db"""
     ex = models.Person.query.filter_by(username=user).first()
-    if ex is None or ex is False :
+    print("WOOOOOOOOOOOOOOOOOOOOW", ex)
+    if ex is None or ex is False:
         return False
-    else:
-        return True
+    return True
+
 
 def win_update(score):
     """Update score by one"""
     return score + 1
-    
+
+
 def lose_update(score):
     """Lower score by one"""
     return score - 1
+
 
 @SOCKETIO.on('updateScore')
 def on_update_score(data):

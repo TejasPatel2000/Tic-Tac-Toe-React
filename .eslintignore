@@ -1,6 +1,12 @@
-src/App.test.js
 src/index.js
 src/ListItem.js
 src/reportWebVitals.js
 src/setupTests.js
 src/test.js
+src/App.css
+src/Board.css
+src/index.css
+src/LeaderBoard.css
+src/logo.svg
+src/Square.css
+src/App.test.js

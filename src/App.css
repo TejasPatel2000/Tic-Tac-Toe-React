@@ -37,19 +37,21 @@
   }
 }
 
-
-html, body, #root, #root>div {
-    background: #333;
-    color: white;
-    width: 500px;
-    height: 10px;
-    margin: auto;
-    position: relative;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
+html,
+body,
+#root,
+#root > div {
+  background: #333;
+  color: white;
+  width: 500px;
+  height: 10px;
+  margin: auto;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
 .group {
   width: 100%;
@@ -59,7 +61,7 @@ html, body, #root, #root>div {
   display: block;
 }
 
-  input {
+input {
   display: block;
   width: 100%;
   border: none;
@@ -103,7 +105,6 @@ input:-webkit-autofill {
   background: rgba(33, 150, 243, 0.3);
 }
 
-
 /*button {*/
 /*  box-shadow:inset 0px 1px 0px 0px #ffffff;*/
 /*	background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);*/
@@ -128,4 +129,3 @@ input:-webkit-autofill {
 /*	position:relative;*/
 /*	top:1px;*/
 /*}*/
-  

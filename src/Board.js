@@ -8,7 +8,17 @@ const socket = io(); // Connects to socket connection
 
 // export function Board(props) {
 function Board(props) {
-  const [board, setBoard] = useState([null, null, null, null, null, null, null, null, null]);
+  const [board, setBoard] = useState([
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ]);
   const [isX, setXNext] = useState(true);
   const [isTurn, setTurn] = useState(isX);
   /* const [users, changeUsers] = useState({
@@ -30,14 +40,19 @@ function Board(props) {
     ];
     for (let i = 0; i < lines.length; i += 1) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (
+        squares[a]
+        && squares[a] === squares[b]
+        && squares[a] === squares[c]
+      ) {
         // if(squares[a] == "X"){
         //  socket.emit("updateScore", {winner:props.dict['playerX'], loser:props.dict['playerO']});
         // }else{
         //  socket.emit("updateScore", {winner:props.dict['playerO'], loser:props.dict['playerX']});
         // }
         return props.dict[`player${squares[a]}`];
-      } if (!squares.includes(null)) {
+      }
+      if (!squares.includes(null)) {
         return 'DRAW';
       }
     }
@@ -68,9 +83,18 @@ function Board(props) {
 
   useEffect(() => {
     if (winner === props.dict.playerX && props.dict.playerX === props.name) {
-      socket.emit('updateScore', { winner: props.dict.playerX, loser: props.dict.playerO });
-    } else if (winner === props.dict.playerO && props.dict.playerO === props.name) {
-      socket.emit('updateScore', { winner: props.dict.playerO, loser: props.dict.playerX });
+      socket.emit('updateScore', {
+        winner: props.dict.playerX,
+        loser: props.dict.playerO,
+      });
+    } else if (
+      winner === props.dict.playerO
+      && props.dict.playerO === props.name
+    ) {
+      socket.emit('updateScore', {
+        winner: props.dict.playerO,
+        loser: props.dict.playerX,
+      });
     }
   }, [winner]);
 
@@ -103,26 +127,26 @@ function Board(props) {
       <Square fillSquare={fillSquare} board={board} index={7} />
       <Square fillSquare={fillSquare} board={board} index={8} />
 
-      {winner
-        ? (
-          <div>
-            <h3>
-              {' '}
-              {winner === 'DRAW' ? 'It is a draw' : `Winner: ${winner}`}
-              {' '}
-            </h3>
-            <button type="button" onClick={restart}>Restart</button>
-          </div>
-        )
-        : (
-          <div>
-            <h3>
-              {' '}
-              Next Player:
-              {(isX ? 'X' : 'O')}
-            </h3>
-          </div>
-        )}
+      {winner ? (
+        <div>
+          <h3>
+            {' '}
+            {winner === 'DRAW' ? 'It is a draw' : `Winner: ${winner}`}
+            {' '}
+          </h3>
+          <button type="button" onClick={restart}>
+            Restart
+          </button>
+        </div>
+      ) : (
+        <div>
+          <h3>
+            {' '}
+            Next Player:
+            {isX ? 'X' : 'O'}
+          </h3>
+        </div>
+      )}
       <br />
     </div>
   );

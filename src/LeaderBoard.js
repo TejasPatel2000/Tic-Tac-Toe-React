@@ -49,13 +49,20 @@ function Leaderboard(props) {
           </tr>
         </thead>
         <tbody>
-
           {allPlayers.map((player) => {
             if (userCurrent === player[0]) {
               return (
                 <tr>
-                  <td id="special_user"><b><i>{player[0]}</i></b></td>
-                  <td id="special_user"><b><i>{player[1]}</i></b></td>
+                  <td id="special_user">
+                    <b>
+                      <i>{player[0]}</i>
+                    </b>
+                  </td>
+                  <td id="special_user">
+                    <b>
+                      <i>{player[1]}</i>
+                    </b>
+                  </td>
                 </tr>
               );
             }
@@ -66,7 +73,6 @@ function Leaderboard(props) {
               </tr>
             );
           })}
-
         </tbody>
       </table>
     </div>

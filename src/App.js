@@ -62,9 +62,12 @@ function App() {
   return (
     <div>
       <h1> Tic Tac Toe </h1>
-      <button type="button" onClick={showLeaderBoard}> Show Leaderboard </button>
-      {showLeader
-        && <Leaderboard name={username} />}
+      <button type="button" onClick={showLeaderBoard}>
+        {' '}
+        Show Leaderboard
+        {' '}
+      </button>
+      {showLeader && <Leaderboard name={username} />}
       <h3>
         Player X:
         {user.playerX}
@@ -76,29 +79,31 @@ function App() {
       <h3>
         Spectators:
         <ul>
-          {user.spectators.map((item) => <li>{item}</li>)}
+          {user.spectators.map((item) => (
+            <li>{item}</li>
+          ))}
         </ul>
       </h3>
-      {loggedIn
-        ? (
-          <div data-testid="tic-tac-toe-board">
-            <h2>
-              {' '}
-              Your username is:
-              {username}
-            </h2>
-            <Board name={username} dict={user} />
-          </div>
-        )
-        : (
-          <div className="group">
-            <br />
-            <input ref={inputRef} type="text" placeholder="Username" />
-            <div className="bar" />
-            <button type="button" onClick={login}>Login </button>
-          </div>
-        )}
-
+      {loggedIn ? (
+        <div data-testid="tic-tac-toe-board">
+          <h2>
+            {' '}
+            Your username is:
+            {username}
+          </h2>
+          <Board name={username} dict={user} />
+        </div>
+      ) : (
+        <div className="group">
+          <br />
+          <input ref={inputRef} type="text" placeholder="Username" />
+          <div className="bar" />
+          <button type="button" onClick={login}>
+            Login
+            {' '}
+          </button>
+        </div>
+      )}
     </div>
   );
   // }

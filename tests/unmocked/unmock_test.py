@@ -10,6 +10,7 @@ from app import *
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
 
+
 class TestCase(unittest.TestCase):
     def setUp(self):
         self.success_test_params = [
@@ -25,26 +26,19 @@ class TestCase(unittest.TestCase):
                 KEY_INPUT: '!A@user!#$',
                 KEY_EXPECTED: models.Person(username='!A@user!#$', score=100)
             },
-            
         ]
-        
-        self.success_test_params2 = [
-            {
-                KEY_INPUT: 100,
-                KEY_EXPECTED: 101
-            },
-            {
-                KEY_INPUT: 5000,
-                KEY_EXPECTED: 5001
-            },
-            {
-                KEY_INPUT: 0,
-                KEY_EXPECTED: 1
-            }
 
-            
-        ]
-        
+        self.success_test_params2 = [{
+            KEY_INPUT: 100,
+            KEY_EXPECTED: 101
+        }, {
+            KEY_INPUT: 5000,
+            KEY_EXPECTED: 5001
+        }, {
+            KEY_INPUT: 0,
+            KEY_EXPECTED: 1
+        }]
+
         self.success_test_params3 = [
             {
                 KEY_INPUT: 100,
@@ -60,30 +54,30 @@ class TestCase(unittest.TestCase):
             },
         ]
 
-
     def test_success(self):
         for test in self.success_test_params:
             actual_result = new_user(test[KEY_INPUT])
             expected_result = test[KEY_EXPECTED]
-            
+
             self.assertEqual(actual_result.username, expected_result.username)
             self.assertEqual(actual_result.score, expected_result.score)
-            
+
     def test_success2(self):
         for test in self.success_test_params2:
             actual_result = win_update(test[KEY_INPUT])
             expected_result = test[KEY_EXPECTED]
-            
+
             self.assertEqual(actual_result, expected_result)
             self.assertEqual(type(actual_result), type(expected_result))
-    
+
     def test_success3(self):
         for test in self.success_test_params3:
             actual_result = lose_update(test[KEY_INPUT])
             expected_result = test[KEY_EXPECTED]
-            
+
             self.assertEqual(actual_result, expected_result)
             self.assertEqual(type(actual_result), type(expected_result))
+
 
 if __name__ == '__main__':
     unittest.main()
