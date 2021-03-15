@@ -61,7 +61,7 @@ function App() {
   //  if (inputRef != null) {
   return (
     <div>
-      <h1> Tic Tac Toe </h1>
+      <h1> Tic Tac Toe! </h1>
       <button type="button" onClick={showLeaderBoard}>
         {' '}
         Show Leaderboard
