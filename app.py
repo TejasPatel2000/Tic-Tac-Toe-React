@@ -83,23 +83,46 @@ def on_login(data):
 @SOCKETIO.on('db')
 def on_db(data):
     """Checks if user exists in db."""
-    exists = models.Person.query.filter_by(username=data).first()
-    if exists is None:
-        user = models.Person(username=data, score=100)
-        DB.session.add(user)
-        DB.session.commit()
-        all_people = models.Person.query.all()
-        users = {}
+    players = {}
+    check = exists(data)
+    print("CHECKKKK", check)
+    if check is False:
+        players = add_to_db(data)
+    SOCKETIO.emit('db', players, broadcast=True, include_self=False)
+    #db.session.query(Person)
+    
+def new_user(user):
+    user = models.Person(username=user, score=100)
+    return user
 
-        for person in all_people:
-            users[person.username] = person.score
+def add_to_db(user):
+    """Add user to db"""
+    players = {}
+    u = new_user(user)
+    DB.session.add(u)
+    DB.session.commit()
+    all_people = models.Person.query.all()
 
-        SOCKETIO.emit('db', users, broadcast=True, include_self=False)
+    for person in all_people:
+        players[person.username] = person.score
+    
+    return players
 
-        #db.session.query(Person)
+def exists(user):
+    """Check to see if user exists in db"""
+    ex = models.Person.query.filter_by(username=user).first()
+    if ex is None or ex is False :
+        return False
+    else:
+        return True
 
-    # socketio.emit('db', data, broadcast=True, include_self=False)
-
+def win_update(score):
+    """Update score by one"""
+    return score + 1
+    
+def lose_update(score):
+    """Lower score by one"""
+    return score - 1
 
 @SOCKETIO.on('updateScore')
 def on_update_score(data):
@@ -112,8 +135,8 @@ def on_update_score(data):
     loser = DB.session.query(
         models.Person).filter_by(username=data['loser']).first()
 
-    winner.score = winner.score + 1
-    loser.score = loser.score - 1
+    winner.score = win_update(winner.score)
+    loser.score = lose_update(loser.score)
 
     DB.session.commit()
 
