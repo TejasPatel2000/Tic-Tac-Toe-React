@@ -81,14 +81,13 @@ function App() {
       </h3>
       {loggedIn
         ? (
-          <div>
+          <div data-testid="tic-tac-toe-board">
             <h2>
               {' '}
               Your username is:
               {username}
             </h2>
-            {user.playerO !== ''
-            && <Board name={username} dict={user} />}
+            <Board name={username} dict={user} />
           </div>
         )
         : (
