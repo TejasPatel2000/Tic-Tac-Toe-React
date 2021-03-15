@@ -23,26 +23,26 @@ function App() {
   const [showLeader, changeLeader] = useState(false);
 
   function login() {
-    // if (inputRef != null) {
-    setUsername(inputRef.current.value);
-    if (inputRef.current.value.length > 0) {
+    if (inputRef != null) {
       setUsername(inputRef.current.value);
-      const newUser = { ...user };
-      if (newUser.playerX === '') {
-        newUser.playerX = inputRef.current.value;
-        setStatus(true);
-      } else if (newUser.playerO === '') {
-        newUser.playerO = inputRef.current.value;
-        setStatus(true);
-      } else {
-        newUser.spectators.push(inputRef.current.value);
-        setStatus(true);
+      if (inputRef.current.value.length > 0) {
+        setUsername(inputRef.current.value);
+        const newUser = { ...user };
+        if (newUser.playerX === '') {
+          newUser.playerX = inputRef.current.value;
+          setStatus(true);
+        } else if (newUser.playerO === '') {
+          newUser.playerO = inputRef.current.value;
+          setStatus(true);
+        } else {
+          newUser.spectators.push(inputRef.current.value);
+          setStatus(true);
+        }
+        changeUsers(newUser);
+        socket.emit('login', { user: newUser });
+        socket.emit('db', inputRef.current.value);
       }
-      changeUsers(newUser);
-      socket.emit('login', { user: newUser });
-      socket.emit('db', username);
     }
-    // }
   }
 
   function showLeaderBoard() {
