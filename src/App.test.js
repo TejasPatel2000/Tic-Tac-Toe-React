@@ -24,7 +24,6 @@ test('LeaderBoard appears and disappears on button click', () => {
   fireEvent.click(showLeaderBoardElement);
 
   const tableElement = screen.getByText('Score');
-
   expect(showLeaderBoardElement).toBeInTheDocument();
   expect(tableElement).toBeInTheDocument();
 
