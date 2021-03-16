@@ -1,8 +1,8 @@
-#Heroku Link:
+# Heroku Link:
 
 ## react-toe.herokuapp.com
 
-# Flask and create-react-app (Milestone 1 info below)
+# Flask and create-react-app (Milestone info below)
 
 ## Requirements
 

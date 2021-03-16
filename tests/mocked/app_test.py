@@ -79,32 +79,33 @@ class TestCase(unittest.TestCase):
             return False
 
     def test_success(self):
+        print("TEST #1")
         for test in self.success_test_params:
             with patch('models.Person.query') as mocked_query:
                 mocked_query.filter_by = self.mocked_person_query_filter_by
                 actual_result = self.mocked_person_query_filter_by(test[KEY_INPUT])
+                print("Actual: ", actual_result)
                 expected_result = test[KEY_EXPECTED]
+                print("Expected: ", expected_result)
 
                 self.assertEqual(actual_result, expected_result)
                 self.assertEqual(type(actual_result), type(expected_result))
 
     def test_success2(self):
+        print("\nTEST #2")
         for test in self.success_test_params2:
             with patch('app.DB.session.add', self.mocked_db_session_add):
                 with patch('app.DB.session.commit',
                           self.mocked_db_session_commit):
                     with patch('models.Person.query') as mocked_query:
                         mocked_query.all = self.mocked_person_query_all
-                        print(self.initial_db_mock)
                         actual_result = add_to_db(test[KEY_INPUT])
-                        print(actual_result)
+                        print("Actual: ", actual_result)
                         expected_result = test[KEY_EXPECTED]
-                        print(self.initial_db_mock)
-                        print(expected_result)
+                        print("Expected: ", expected_result)
 
-    #                     self.assertDictEqual(actual_result, expected_result)
-    #                     self.assertEqual(len(actual_result),
-    #                                      len(expected_result))
+                        self.assertDictEqual(actual_result, expected_result)
+                        self.assertEqual(len(actual_result), len(expected_result))
 
 
 if __name__ == '__main__':

@@ -55,25 +55,34 @@ class TestCase(unittest.TestCase):
         ]
 
     def test_success(self):
+        print("TEST 1")
         for test in self.success_test_params:
             actual_result = new_user(test[KEY_INPUT])
+            print("Actual: ", actual_result)
             expected_result = test[KEY_EXPECTED]
-
+            print("Expected: ", expected_result)
+            
             self.assertEqual(actual_result.username, expected_result.username)
             self.assertEqual(actual_result.score, expected_result.score)
 
     def test_success2(self):
+        print("\nTEST 2")
         for test in self.success_test_params2:
             actual_result = win_update(test[KEY_INPUT])
+            print("Actual: ", actual_result)
             expected_result = test[KEY_EXPECTED]
-
+            print("Expected: ", expected_result)
+            
             self.assertEqual(actual_result, expected_result)
             self.assertEqual(type(actual_result), type(expected_result))
 
     def test_success3(self):
+        print("\nTEST 3")
         for test in self.success_test_params3:
             actual_result = lose_update(test[KEY_INPUT])
+            print("Actual: ", actual_result)
             expected_result = test[KEY_EXPECTED]
+            print("Expected: ", expected_result)
 
             self.assertEqual(actual_result, expected_result)
             self.assertEqual(type(actual_result), type(expected_result))
